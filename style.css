@@ -1,0 +1,65 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 30px;
+}
+
+h1 {
+    color: #1a93d3;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    margin-bottom: 20px;
+    background-color: #014789;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #1a93d3;
+}
+
+#bingo-card {
+    display: inline-block;
+    border: 2px solid #014789;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+table {
+    border-collapse: collapse;
+    margin: 0 auto;
+}
+
+td, th {
+    border: 1px solid #014789;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+th {
+    color: white;
+    background-color: #1a93d3;
+}
+
+td.free {
+    background-color: #ffcc00;
+}
+
+td.marked {
+    background-color: #00cc66;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+td {
+    cursor: pointer;
+}
