@@ -1,66 +1,92 @@
-function generateBingoCard() {
-    const columns = {
-        B: range(1, 15),
-        I: range(16, 30),
-        N: range(31, 45),
-        G: range(46, 60),
-        O: range(61, 75)
-    };
+// Bingo number ranges per column
+const bingoRanges = [
+  [1, 15],   // B
+  [16, 30],  // I
+  [31, 45],  // N
+  [46, 60],  // G
+  [61, 75]   // O
+];
 
-    const card = {};
+// DOM elements
+const bingoCard = document.querySelector("#bingoCard tbody");
+const generateBtn = document.getElementById("generateBtn");
+const playerNameInput = document.getElementById("playerName");
 
-    for (let col in columns) {
-        card[col] = getRandomNumbers(columns[col], 5);
+let hasMarkedNumber = false;
+
+// Restore saved player name
+playerNameInput.value = localStorage.getItem("bingoPlayerName") || "";
+
+// Save player name
+playerNameInput.addEventListener("input", () => {
+  localStorage.setItem("bingoPlayerName", playerNameInput.value);
+});
+
+// Generate unique numbers per column
+function generateNumbers(min, max) {
+  const numbers = [];
+  while (numbers.length < 5) {
+    const n = Math.floor(Math.random() * (max - min + 1)) + min;
+    if (!numbers.includes(n)) numbers.push(n);
+  }
+  return numbers;
+}
+
+// Disable Generate button once a number is marked
+function disableGenerateButton() {
+  generateBtn.disabled = true;
+  generateBtn.style.opacity = "0.5";
+  generateBtn.style.cursor = "not-allowed";
+}
+
+// Enable Generate button (new card)
+function enableGenerateButton() {
+  generateBtn.disabled = false;
+  generateBtn.style.opacity = "1";
+  generateBtn.style.cursor = "pointer";
+}
+
+// Generate Bingo card
+function generateCard() {
+  bingoCard.innerHTML = "";
+  hasMarkedNumber = false;
+  enableGenerateButton();
+
+  const columns = bingoRanges.map(range =>
+    generateNumbers(range[0], range[1])
+  );
+
+  for (let row = 0; row < 5; row++) {
+    const tr = document.createElement("tr");
+
+    for (let col = 0; col < 5; col++) {
+      const td = document.createElement("td");
+
+      // FREE space
+      if (row === 2 && col === 2) {
+        td.textContent = "FREE";
+        td.classList.add("marked");
+      } else {
+        td.textContent = columns[col][row];
+
+        td.addEventListener("click", () => {
+          if (!td.classList.contains("marked")) {
+            td.classList.add("marked");
+            hasMarkedNumber = true;
+            disableGenerateButton();
+          }
+        });
+      }
+
+      tr.appendChild(td);
     }
 
-    card["N"][2] = "FREE"; // middle cell
-
-    renderCard(card);
+    bingoCard.appendChild(tr);
+  }
 }
 
-function range(start, end) {
-    const arr = [];
-    for (let i = start; i <= end; i++) arr.push(i);
-    return arr;
-}
+// Button click
+generateBtn.addEventListener("click", generateCard);
 
-function getRandomNumbers(array, n) {
-    const shuffled = array.slice().sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, n);
-}
-
-function renderCard(card) {
-    let html = "<table><tr>";
-    for (let col of "BINGO") html += `<th>${col}</th>`;
-    html += "</tr>";
-
-    for (let i = 0; i < 5; i++) {
-        html += "<tr>";
-        for (let col of "BINGO") {
-            let value = card[col][i];
-            if (value === "FREE") {
-                html += `<td class="free marked">${value}</td>`;
-            } else {
-                html += `<td onclick="markCell(this)">${value}</td>`;
-            }
-        }
-        html += "</tr>";
-    }
-
-    html += "</table>";
-    document.getElementById("bingo-card").innerHTML = html;
-}
-
-function markCell(cell) {
-    cell.classList.toggle("marked");
-}
-
-// Register service worker for offline support
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js')
-        .then(() => console.log('Service Worker Registered'))
-        .catch(err => console.log('Service Worker Failed:', err));
-}
-
-// Generate initial card
-generateBingoCard();
+// Generate card on page load
+generateCard();
