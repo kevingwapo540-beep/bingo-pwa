@@ -1,186 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bingo Card Generator</title>
-<style>
-body {
-  font-family: Arial, sans-serif;
-  background: #f4f4f4;
-  display: flex;
-  justify-content: center;
-  padding: 20px;
-}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bingo Card Generator</title>
 
-.container {
-  max-width: 400px;
-  width: 100%;
-  text-align: center;
-}
+  <!-- Optional: prevent favicon error -->
+  <link rel="icon" href="data:,">
 
-h1 {
-  margin-bottom: 10px;
-}
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+      margin: 0;
+    }
 
-#player-section {
-  margin-bottom: 10px;
-}
+    .container {
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
 
-#playerName {
-  padding: 6px;
-  font-size: 16px;
-  width: 80%;
-  text-align: center;
-}
+    h1 {
+      margin-top: 0;
+    }
 
-button {
-  padding: 10px 15px;
-  font-size: 16px;
-  cursor: pointer;
-  margin-bottom: 10px;
-}
+    #playerName {
+      width: 80%;
+      padding: 8px;
+      font-size: 16px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
+    #generateBtn {
+      padding: 10px 15px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
 
-th, td {
-  border: 1px solid #333;
-  width: 20%;
-  height: 60px;
-  text-align: center;
-  font-size: 18px;
-  cursor: pointer;
-}
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
 
-th {
-  background: #333;
-  color: white;
-}
+    th, td {
+      border: 1px solid #333;
+      width: 20%;
+      height: 60px;
+      text-align: center;
+      font-size: 18px;
+      cursor: pointer;
+    }
 
-td.marked {
-  background: #4caf50;
-  color: white;
-}
+    th {
+      background: #333;
+      color: white;
+    }
 
-@media (max-width: 500px) {
-  td {
-    height: 50px;
-    font-size: 16px;
-  }
-}
-</style>
+    td.marked {
+      background: #4caf50;
+      color: white;
+    }
+
+    @media (max-width: 500px) {
+      td {
+        height: 50px;
+        font-size: 16px;
+      }
+    }
+  </style>
 </head>
 
 <body>
-<div class="container">
-  <h1>BINGO</h1>
+  <div class="container">
+    <h1>BINGO</h1>
 
-  <div id="player-section">
-    <input type="text" id="playerName" placeholder="Enter player name">
+    <!-- Player name -->
+    <input
+      type="text"
+      id="playerName"
+      placeholder="Enter player name"
+      autocomplete="off"
+    />
+
+    <!-- Generate button -->
+    <button id="generateBtn">Generate New Card</button>
+
+    <!-- Bingo table -->
+    <table>
+      <thead>
+        <tr>
+          <th>B</th>
+          <th>I</th>
+          <th>N</th>
+          <th>G</th>
+          <th>O</th>
+        </tr>
+      </thead>
+      <tbody id="bingoCard"></tbody>
+    </table>
   </div>
 
-  <button id="generateBtn">Generate New Card</button>
-
-  <table>
-  <thead>
-    <tr>
-      <th>B</th>
-      <th>I</th>
-      <th>N</th>
-      <th>G</th>
-      <th>O</th>
-    </tr>
-  </thead>
-  <tbody id="bingoCard"></tbody>
-</table>
-
-</div>
-
-<script>
-const bingoRanges = [
-  [1, 15],
-  [16, 30],
-  [31, 45],
-  [46, 60],
-  [61, 75]
-];
-
-const bingoCard = document.querySelector("#bingoCard tbody");
-const generateBtn = document.getElementById("generateBtn");
-const playerNameInput = document.getElementById("playerName");
-
-let hasMarkedNumber = false;
-
-// Restore saved name
-playerNameInput.value = localStorage.getItem("bingoPlayerName") || "";
-
-// Save name
-playerNameInput.addEventListener("input", () => {
-  localStorage.setItem("bingoPlayerName", playerNameInput.value);
-});
-
-function generateNumbers(min, max) {
-  const numbers = [];
-  while (numbers.length < 5) {
-    const n = Math.floor(Math.random() * (max - min + 1)) + min;
-    if (!numbers.includes(n)) numbers.push(n);
-  }
-  return numbers;
-}
-
-function disableGenerateButton() {
-  generateBtn.disabled = true;
-  generateBtn.style.opacity = "0.5";
-  generateBtn.style.cursor = "not-allowed";
-}
-
-function enableGenerateButton() {
-  generateBtn.disabled = false;
-  generateBtn.style.opacity = "1";
-  generateBtn.style.cursor = "pointer";
-}
-
-function generateCard() {
-  bingoCard.innerHTML = "";
-  hasMarkedNumber = false;
-  enableGenerateButton();
-
-  const columns = bingoRanges.map(r => generateNumbers(r[0], r[1]));
-
-  for (let row = 0; row < 5; row++) {
-    const tr = document.createElement("tr");
-    for (let col = 0; col < 5; col++) {
-      const td = document.createElement("td");
-
-      // FREE SPACE
-      if (row === 2 && col === 2) {
-        td.textContent = "FREE";
-        td.classList.add("marked");
-      } else {
-        td.textContent = columns[col][row];
-        td.addEventListener("click", () => {
-          if (!td.classList.contains("marked")) {
-            td.classList.add("marked");
-            hasMarkedNumber = true;
-            disableGenerateButton();
-          }
-        });
-      }
-
-      tr.appendChild(td);
-    }
-    bingoCard.appendChild(tr);
-  }
-}
-
-generateBtn.addEventListener("click", generateCard);
-
-// Generate card on load
-generateCard();
-<script src="script.js"></script>
-</script>
+  <!-- IMPORTANT: script must be last -->
+  <script src="script.js"></script>
 </body>
 </html>
