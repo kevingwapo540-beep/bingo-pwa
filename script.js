@@ -1,3 +1,4 @@
+document.addEventListener("DOMContentLoaded", () => {
 // Bingo number ranges per column
 const bingoRanges = [
   [1, 15],   // B
@@ -90,3 +91,5 @@ generateBtn.addEventListener("click", generateCard);
 
 // Generate card on page load
 generateCard();
+});
+
