@@ -8,7 +8,7 @@ const bingoRanges = [
 ];
 
 // DOM elements
-const bingoCard = document.querySelector("#bingoCard tbody");
+const bingoCard = document.getElementById("bingoCard");
 const generateBtn = document.getElementById("generateBtn");
 const playerNameInput = document.getElementById("playerName");
 
