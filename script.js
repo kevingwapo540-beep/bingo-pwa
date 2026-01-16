@@ -11,7 +11,6 @@ const bingoRanges = [
 const bingoCard = document.getElementById("bingoCard");
 const generateBtn = document.getElementById("generateBtn");
 const playerNameInput = document.getElementById("playerName");
-console.log(bingoCard);
 
 let hasMarkedNumber = false;
 
