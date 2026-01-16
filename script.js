@@ -89,6 +89,16 @@ function generateCard() {
 // Button click
 generateBtn.addEventListener("click", generateCard);
 
+const bingoBtn = document.getElementById("bingoBtn");
+
+bingoBtn.addEventListener("click", () => {
+  // Optional confirmation
+  if (confirm("Start a new Bingo card?")) {
+    generateCard();
+  }
+});
+
+
 // Generate card on page load
 generateCard();
 });
